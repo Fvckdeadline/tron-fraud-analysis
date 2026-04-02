@@ -60,6 +60,38 @@ The attackers use a **refund manipulation scheme**:
 
 ---
 
+## Local Exploration Tool
+
+This repository also includes a lightweight server for interactive analysis of transactions and wallet relationships.
+
+You can explore:
+- transaction flows
+- wallet connections
+- labeled routes
+- quick navigation to blockchain explorer links
+
+### Clone repository 
+```bash
+git clone https://github.com/Fvckdeadline/tron-fraud-analysis.git
+```
+
+### Install Node modules
+```bash
+npm install
+```
+
+### Run locally
+```bash
+node server.js
+```
+Then open in your browser:
+
+http://localhost:3050
+
+This interface allows convenient investigation of the dataset and visual graph navigation.
+
+---
+
 ## Disclaimer
 
 This analysis is based on publicly available blockchain data and reflects observed transaction patterns. No claims are made regarding the identity of individuals behind the addresses.
