@@ -1,0 +1,50 @@
+<div style="position: fixed; top: 8px; left: 8px; padding: 8px; border: 1px solid #555; background: rgba(255,255,255,.95); z-index: 999; border-radius: 6px;">
+    <label>Min amount (USDT): <input id="minAmount" type="number" step="0.000001" value="100" /></label>
+    <button id="refresh">Refresh graph</button>
+</div>
+<div id="graph"></div>
+<div id="sidebar" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.8); color: #fff; font-family: sans-serif; font-size: 14px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; z-index: 999;">
+    <div><b>Total obtained by attackers (overpayment):</b> <span id="totalObtained">loading...</span></div>
+    <div><b>Black schemes cashed out:</b> <span id="totalCashedOut">loading...</span></div>
+    <div><b>Gone to CryptoBot:</b> <span id="goneToCryptoBot">loading...</span></div>
+</div>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/viz.js@2.1.2/viz.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/viz.js@2.1.2/full.render.js"></script>
+<script src="https://unpkg.com/d3-graphviz@5.0.2/build/d3-graphviz.js"></script>
+<script>
+
+    async function render(minAmount = 100) {
+        const res = await fetch(`/graph.dot?min=${encodeURIComponent(minAmount)}`);
+        const dot = await res.text();
+
+        d3.select("#graph")
+            .graphviz()
+            .renderDot(dot);
+    }
+
+    document.querySelector("#refresh").addEventListener("click", () => {
+        const min = Number(document.querySelector("#minAmount").value) || 0;
+        render(min);
+    });
+
+    async function refreshStats() {
+        try {
+            const r = await fetch('/stats');
+            const s = await r.json();
+            document.querySelector('#totalObtained').textContent = Number(s.totalObtainedByAttackers || 0).toFixed(6);
+            document.querySelector('#totalCashedOut').textContent = Number(s.totalCashedOut || 0).toFixed(6);
+            document.querySelector('#goneToCryptoBot').textContent = Number(s.goneToCryptoBot || 0).toFixed(6);
+        } catch (e) {
+            document.querySelector('#totalObtained').textContent = 'error';
+            document.querySelector('#totalCashedOut').textContent = 'error';
+            document.querySelector('#goneToCryptoBot').textContent = 'error';
+        }
+    }
+
+    const initialMin = Number(document.querySelector("#minAmount").value) || 0;
+    render(initialMin);
+    refreshStats();
+    
+
+</script>
