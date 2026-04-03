@@ -4,7 +4,7 @@ const fs = require("fs");
 
 const API = "https://apilist.tronscanapi.com/api/token_trc20/transfers";
 const SERVER_URL = "http://localhost:3050";
-const RESULT_FILE = "result.json";
+const RESULT_FILE = "data.json";
 const DOT_FILE = "public/graph.dot";
 
 function loadResult() {
@@ -447,7 +447,7 @@ async function main() {
     const depth = parseInt(readline.question("Depth: "), 10) || 3;
     await trace(start, depth);
     saveGraph();
-    console.log("\n✅ Saved to result.json and public/graph.dot");
+    console.log("\n✅ Saved to data.json and public/graph.dot");
 }
 
 if (require.main === module) {

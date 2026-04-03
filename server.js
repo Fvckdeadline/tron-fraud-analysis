@@ -3,6 +3,7 @@ const app = express();
 const fs = require("fs");
 const path = require("path");
 const { toDOT, toDOTVictimToCashout } = require("./index");
+const DATA_DIR = path.join(__dirname, "data.json");
 
 // если приложение за nginx/proxy, тогда пробрасываем реальный IP из заголовков
 app.set("trust proxy", true);
@@ -15,13 +16,13 @@ app.use((req, res, next) => {
 });
 
 app.get("/data", async (req, res) => {
-    const result = JSON.parse(fs.readFileSync("result.json"));
+    const result = JSON.parse(fs.readFileSync(DATA_DIR));
     res.json(result);
 });
 
 app.get("/graph.dot", async (req, res) => {
     const minAmount = Number(req.query.min) || 0;
-    const result = JSON.parse(fs.readFileSync("result.json"));
+    const result = JSON.parse(fs.readFileSync(DATA_DIR));
     // const firstReport = JSON.parse(fs.readFileSync("firstReport.json"));
     
     const importantExchanges = ["Binance", "Bybit", "OKX", "Huobi", "KuCoin", "Gate.io", "Bitfinex", "Kraken", "Bitstamp", "Cryptomus", "Kraken", "FixedFloat", "Gate", "Bitgate", "WestWallet", "WhiteBit", "MEXC", "CryptoBot"];
@@ -87,7 +88,7 @@ app.listen(3050, async () => {
 
 app.get("/edge", (req, res) => {
     const { from, to } = req.query;
-    const result = JSON.parse(fs.readFileSync("result.json"));
+    const result = JSON.parse(fs.readFileSync(DATA_DIR));
 
     const txs = result.transactions.filter(
         tx => tx.from === from && tx.to === to
@@ -100,7 +101,7 @@ app.get("/edge", (req, res) => {
 });
 
 app.get("/stats", (req, res) => {
-    const result = JSON.parse(fs.readFileSync("result.json"));
+    const result = JSON.parse(fs.readFileSync(DATA_DIR));
     const wallets = result.wallets || {};
 
     let totalObtainedByAttackers = 0;
